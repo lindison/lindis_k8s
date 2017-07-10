@@ -1,0 +1,5 @@
+/Users/Lindis/git/aws_kops/working_files/microservice-kubernetes-demo-working/microservice-kubernetes-demo-customer/src/main/java/com/ewolff/microservice/customer/CustomerApp.java
+/Users/Lindis/git/aws_kops/working_files/microservice-kubernetes-demo-working/microservice-kubernetes-demo-customer/src/main/java/com/ewolff/microservice/customer/web/CustomerController.java
+/Users/Lindis/git/aws_kops/working_files/microservice-kubernetes-demo-working/microservice-kubernetes-demo-customer/src/main/java/com/ewolff/microservice/customer/SpringRestDataConfig.java
+/Users/Lindis/git/aws_kops/working_files/microservice-kubernetes-demo-working/microservice-kubernetes-demo-customer/src/main/java/com/ewolff/microservice/customer/Customer.java
+/Users/Lindis/git/aws_kops/working_files/microservice-kubernetes-demo-working/microservice-kubernetes-demo-customer/src/main/java/com/ewolff/microservice/customer/CustomerRepository.java

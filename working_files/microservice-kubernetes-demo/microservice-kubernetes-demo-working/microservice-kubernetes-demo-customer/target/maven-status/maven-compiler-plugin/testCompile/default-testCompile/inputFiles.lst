@@ -1,0 +1,5 @@
+/Users/Lindis/git/aws_kops/working_files/microservice-kubernetes-demo/microservice-kubernetes-demo-customer/src/test/java/com/ewolff/microservice/customer/cdc/Customer.java
+/Users/Lindis/git/aws_kops/working_files/microservice-kubernetes-demo/microservice-kubernetes-demo-customer/src/test/java/com/ewolff/microservice/customer/cdc/CustomerConsumerDrivenContractTest.java
+/Users/Lindis/git/aws_kops/working_files/microservice-kubernetes-demo/microservice-kubernetes-demo-customer/src/test/java/com/ewolff/microservice/customer/cdc/CustomerClient.java
+/Users/Lindis/git/aws_kops/working_files/microservice-kubernetes-demo/microservice-kubernetes-demo-customer/src/test/java/com/ewolff/microservice/customer/CustomerTestApp.java
+/Users/Lindis/git/aws_kops/working_files/microservice-kubernetes-demo/microservice-kubernetes-demo-customer/src/test/java/com/ewolff/microservice/customer/CustomerWebIntegrationTest.java

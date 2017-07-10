@@ -1,0 +1,17 @@
+= Legal Mombo Jombo
+
+== Copyright
+
+Solinea, Inc. prepared this document for {course} course.
+
+This document contains proprietary information which is for exclusive use during the Deploying Applications to {course} course.
+
+Solinea does not warrant this document to be free of errors or omissions.  Solinea reserves the right to make corrections, updates, revisions, or changes to the information contained herein. Solinea does not warrant the material described herein to be free of patent infringement.
+
+== Distribution
+Do not forward or copy without written permission.
+
+Copies of this document are restricted to the following:
+
+- {course} Attendees +
+- Solinea, Inc.

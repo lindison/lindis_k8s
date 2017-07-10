@@ -1,0 +1,261 @@
+= Pods and Labels
+
+:imagesdir: images
+
+== Lab Objectives
+
+== Lab Structure Overview
+
+---
+---
+
+== Lab Overview
+
+Pods are the atomic unit of Kubernetes.
+
+Using the dashboard; let's create the following pod using the `nginx:1.11-alpine` container.
+
+image::pod_single_container.png[]
+
+=== Step 1. Deploy a pod using the GUI
+
+==== Create
+
+Click on the *+ CREATE* button on the top right of the screen.
+
+image::pods_step_1.png[600,600]
+
+==== Define the name
+
+Ensure the radio button for *Specify app details below* is clicked and populate the *App name* with `nginx`
+
+image::pods_step_2.png[600,600]
+
+==== Define the image
+
+Use `nginx:1.11-alpine` for the container image name.
+
+image::pods_step_3.png[600,600]
+
+==== Deploy the container
+
+Leave *Number of Pods* at 1, *Services* at none, and click the *DEPLOY* button.
+
+image::pods_step_4.png[600,600]
+
+==== Validate deployed pod
+
+Once *DEPLOY* is clicked, you will see the status in a small pie chart icon.
+
+image::pods_step_5.png[600,600]
+
+You will need to *refresh* the page to see the status change. When all status circles are replaced with green checks, the rollout will be complete.
+
+image::pods_step_6.png[600,600]
+
+NOTE: Creating this pod will create three Kubernetes objects (Deployments, Replica Sets, and Pods). Remember, pods are the atomic unit of Kubernetes.
+
+=== Step 2. Review `Pods`
+
+Click on the *Pods* section and it will output the pod.
+
+image::pods_step_7.png[600,600]
+
+=== Step 3. Review `Pods` from the command-line
+
+From the command line, run the `kubectl get pods` command and take a look at the data outputs.
+
+READY:: The number of containers that are ready in the pod.
+
+STATUS:: The status of the pod
+
+RESTARTS:: Number of restarts during the life of the pod.
+
+AGE:: Age of the pod
+
+$ `kubectl get pods`
+....
+NAME                     READY     STATUS    RESTARTS   AGE
+nginx-3394779010-z1q9h   1/1       Running   0          57m
+....
+
+=== Step 4. Deploy a pod from the command-line
+
+Let's deploy a similar pod from the command-line.
+
+$ `kubectl run nginx-cli --image nginx:1.11-alpine`
+
+TIP: To see the avaialble options and switched, run `kubectl run --help`
+
+Let's get the pods and review the out.
+
+$ `kubectl get pods`
+
+....
+NAME                     READY     STATUS    RESTARTS   AGE
+nginx-3394779010-z1q9h   1/1       Running   0          57m
+nginx-cli-2713055296d3   1/1       Running   0          4m
+....
+
+
+=== Step 5. Labels
+
+Let's create some nginx pod with labels, first from the command-line and next from a `yaml` file. Let's create one for prod and one for test. Let's also define the app. In this case, let's use `nginx`.
+
+....
+$ kubectl run nginx-prod \
+    --image=nginx:1.11-alpine \
+    --replicas=3 \
+    --labels="app=nginx,env=prod"
+....
+
+....
+$ kubectl run nginx-test \
+    --image=nginx:1.9.10 \
+    --replicas=2 \
+    --labels="app=nginx,env=test"
+....
+
+NOTE: Labels are the only way to group Kubernetes objects.
+
+$ `kubectl get pods`
+
+$ `kubectl get pods --selector="app=nginx"`
+
+$ `kubectl get pods --selector="env=prod"`
+
+$ `kubectl get pods --selector="env=test"`
+
+Let's create another pod that runs apache.
+
+....
+$ kubectl run httpd-test \
+    --image=httpd:alpine \
+    --replicas=2 \
+    --labels="app=httpd,env=test"
+....
+
+Let's run the following to see the different ways a label can be queried.
+
+First, let's select all pods where `app=nginx`
+
+$ `kubectl get pods --selector="app=nginx"`
+
+Now, let's select all pods where `app=httpd`
+
+$ `kubectl get pods --selector="app=httpd"`
+
+
+$ `kubectl get pods --selector="env=test"`
+
+TIP: One or more labels can be used with the `--selector` switch.
+
+$ `kubectl get pods --selector="env=test,app=nginx"`
+
+Before going to the next step; let's cleanup the environment. This will delete the pods we've made up to now.
+
+$ `kubectl delete all --all`
+
+WARNING: Do not run this is production as it will delete most everything associated with the current namespace.
+
+
+=== Step 6. Ports
+
+Now that we are able to deploy a pod and associate some metadata with the pod, let's work on getting the pod ports defined. Let's deploy two pods; one without `--ports` defined and one with.
+
+$ `kubectl run nginx-no-ports --image=nginx:1.11-alpine`
+
+$ `kubectl run nginx-ports --image=nginx:1.11-alpine --port=80`
+
+Let's get the pods output using the `kubectl get pods` command.
+
+Run `kubectl describe` on each of the pods. Notice that `no-ports` has no defined ports.
+
+describe output of `nginx-no-ports`:
+....
+Containers:
+  nginx-ports:
+    Port:
+....
+
+describe output of `nginx-ports`:
+....
+Containers:
+  nginx-ports:
+    Port:		80/TCP
+....
+
+=== Step 7. Creating a pod manifest
+
+
+
+$ `kubectl run nginx-pod-cli --image nginx:1.11-alpine --port=80 --labels="app=nginx,env=dev"`
+
+....
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod-yaml
+  labels:
+    app: nginx
+    env: dev
+spec:
+  containers:
+  - name: nginx-pod-yaml
+    image: nginx:1.11-alpine
+    ports:
+    - containerPort: 80
+....
+
+
+....
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-two-container
+  labels:
+    app: nginx
+    env: dev
+spec:
+  containers:
+  - name: nginx-container-1
+    image: nginx:1.11-alpine
+    ports:
+    - containerPort: 80
+  - name: nginx-container-2
+    image: nginx:1.11-alpine
+    ports:
+    - containerPort: 80
+....
+
+== Pods Appendix
+
+As previously stated, pods are the atomic unit of Kubernetes. However, it is important to know that multiple containers and volumes can reside in a single pod. In a follow up lab, we'll create a deployment that uses two images.
+
+=== Appendix A. Standalone Container
+
+In this scenario, a single pod runs a single container.
+
+image::pod_single_container.png[]
+
+=== Appendix B. Container Grouping
+
+In this scenario, two containers may have low latency requirements between each other. Two container deployed in the same pod will reside on the same Kubernetes Node.
+
+image::pod_two_containers.png[]
+
+In this scenario, two containers may have low latency requirements between each other. Two container deployed in the same pod will reside on the same Kubernetes Node.
+
+=== Appendix C.
+
+In this scenario, two containers may have low latency requirements between each other and may require a persistent volume. Two container deployed in the same pod will reside on the same Kubernetes Node.
+
+image::pod_two_containers_plus_data.png[]
+
+=== Appendix D.
+
+In this scenario, two containers may have low latency requirements between each other and each may require persistent volumes. The two containers deployed in the same pod will reside on the same Kubernetes Node.
+
+image::pod_two_containers_plus_two_data.png[]
+
+== Conclusion

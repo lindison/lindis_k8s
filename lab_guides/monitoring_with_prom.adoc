@@ -1,0 +1,68 @@
+= Monitoring Kubernetes with Prometheus
+
+== Lab Objectives
+In this lab we will deploy a fully functionally monitoring capability for Kubernetes using Prometheus, Node-Exporter, and Grafana.
+
+== Lab Structure Overview
+- Deploy a configmap for Prometheus
+- Deploy a deployment and service for prometheus
+- Deploy a node-exporter deployment
+- Deploy an updated configmap for Prometheus
+- Deploy a deployment and service for grafana
+
+
+---
+---
+
+== Lab Overview
+
+=== Step 1.
+Open a terminal (iTerm, Terminal, PowerShell, Ubuntu Bash, Git Bash, etc)
+
+=== Step 2.
+Ensure the following files are in the `./lab/monitoring/` directory:
+....
+prometheus-configmap-1.yaml
+prometheus-deployment.yaml
+node-exporter.yaml
+grafana-service.yaml
+grafana-deployment.yaml
+prometheus-configmap-2.yaml
+....
+
+=== Step 3.
+Using the `kubectl` command, apply the configmap in the file `prometheus-configmap-1.yaml` +
+....
+$ kubectl create -f prometheus-configmap-1.yaml
+configmap "prometheus" created
+....
+
+=== Step 4.
+Using the `kubectl` command, apply the deployment in the file `prometheus-configmap-1.yaml` +
+....
+$ kubectl create -f prometheus-deployment.yaml
+deployment "prometheus" created
+....
+
+=== Step 5.
+
+=== Step 6.
+
+
+=== Step 7.
+
+
+=== Step 8.
+
+
+=== Step 9.
+
+
+=== Step 10.
+
+
+=== Step 11.
+
+image::monitoring_with_prom-fa34d.png[]
+
+== Conclusion

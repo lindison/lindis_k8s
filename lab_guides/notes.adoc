@@ -1,0 +1,40 @@
+= Notes for looking into stuff
+
+What is --service-node-port-range in Kubernetes? 
+
+By default, services can only run on ports 30000 - 32767. 
+
+
+== Service
+
+Selector  
+
+nodePort  
+
+targetPort  
+
+== kubectl 
+
+`kubectl get deployments`
+
+`kubectl get rs`
+
+== Setting up Kubernetes Dashboard (with Vagrant)
+
+When the system is up and running; run `kubectl cluster-info` and take note if dashboard shows up. 
+
+....
+18:26:05 › kubectl cluster-info
+Kubernetes master is running at https://172.17.4.101:443
+Heapster is running at https://172.17.4.101:443/api/v1/proxy/namespaces/kube-system/services/heapster
+KubeDNS is running at https://172.17.4.101:443/api/v1/proxy/namespaces/kube-system/services/kube-dns
+kubernetes-dashboard is running at https://172.17.4.101:443/api/v1/proxy/namespaces/kube-system/services/kubernetes-dashboard
+....
+
+If it does, run `kubectl proxy --port 9090` or whatever port is available. 
+
+Once this is up; open a new terminal and connect to `http://127.0.0.1:9090/api/v1/proxy/namespaces/kube-system/services/kubernetes-dashboard` and this will open your Kubernetes Dashboard.  
+
+NOTE: Not sure if this works for everything just yet but makes sense if it does. 
+
+TIP: You can also deploy using a yaml that deploys teh dashboard. 

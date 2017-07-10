@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: "letschat"
+  labels:
+    app: "letschat"
+spec:
+  replicas: 2
+  selector:
+    app: letschat
+  template:
+    metadata:
+      labels:
+        app: letschat
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: "sdelements/lets-chat"
+        imagePullPolicy: Always
+        name: "letschat"
+        env:
+        - name: LCB_FILES_ENABLE
+          value: "true"
+        - name: LCB_FILES_PROVIDER
+          value: "local"
+        - name: LCB_FILES_LOCAL_DIR
+          value: "uploads"
+        volumeMounts:
+        - mountPath: /usr/src/app/uploads
+          name: uploadsvol
+        ports:
+        - containerPort: 8080
+          name: letschat
+      volumes:
+      - name: uploadsvol
+        nfs:
+            server: us-west-2a.fs-bacb1b13.efs.us-west-2.amazonaws.com
+            path: /

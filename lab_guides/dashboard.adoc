@@ -1,0 +1,101 @@
+= Kubernetes Dashboard (UI)
+
+:imagesdir: images
+
+== Lab Objectives
+
+Deploy the Kubernetes Dashboard to a vanilla Kuberetes Cluster.
+
+=== Lab Structure Overview
+
+---
+---
+
+=== Lab Overview
+
+Depending on the Kubernetes implementation, some distros come with a pre-configured dashboard. For the lab environment, a pre-configured dashboard is not used. This allows us to deploy a dashboard.
+
+=== Step 1.
+
+In the working_files directory, cd into the *dashboard_lab* directory. Validate that a file named kubernetes-dashboard.yaml exists.
+
+Run the following command to deploy the Kubernetes dashboard.
+
+$ `kubectl create -f kubernetes-dashboard.yaml`
+....
+deployment "kubernetes-dashboard" created
+service "kubernetes-dashboard" created
+....
+
+TIP: This might take a few minutes to complete as Kubernetes will need to pull the images and start the containers.
+
+=== Step 2.
+Run this command to get the status of the deployment.
+
+$ `kubectl get deployment kubernetes-dashboard --namespace kube-system`
+....
+NAME                   DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+kubernetes-dashboard   1         1         1            1           1m
+....
+
+NOTE: We'll cover the details of this command in a follow up module; for now, it's fine to continue without knowing what this all means.
+
+=== Step 3.
+
+Let's find the Kubernetes-Dashboard URL by running the following command:
+
+$ `kubectl cluster-info`
+
+....
+Kubernetes master is running at https://api.kubernetes.kubectl.guru
+KubeDNS is running at https://api.kubernetes.kubectl.guru/api/v1/proxy/namespaces/kube-system/services/kube-dns
+kubernetes-dashboard is running at https://api.kubernetes.kubectl.guru/api/v1/proxy/namespaces/kube-system/services/kubernetes-dashboard
+....
+
+This will output the addresses of the master and services with a label  `kubernetes.io/cluster-service=true`
+
+.output of `kubectl get deploy/kubernetes-dashboard -o json --namespace kube-system`
+....
+"labels": {
+    "k8s-addon": "kubernetes-dashboard.addons.k8s.io",
+    "k8s-app": "kubernetes-dashboard",
+    "kubernetes.io/cluster-service": "true",
+    "version": "v1.5.0"
+....
+
+NOTE: We'll cover the details of this command in a follow up module; for now, it's fine to continue without knowing what this all means.
+
+=== Step 4.
+
+In a browser of your choosing, put the link that is associated with *kubernetes-dashboard* in the output of `kubectl cluster-info`.
+
+You'll be promted for a username and password. For this deployment, these can be found by running the following command:
+
+$ `kubectl config view`
+
+....
+- name: kubernetes.kubectl.guru-basic-auth
+  user:
+    password: rigmEr57YGcHwS7Ujt9ssg6OsGnhiIfL
+    username: admin
+....
+
+NOTE: Use this username and password to sign into the dashboard. This password was generated randomly when the cluster was created. Updating this password is outside the scope of this course.
+
+WARNING: There are other methods used to connect to the Dashbaord; to control scope, only the above method is mentioned. Please refer to your operations team or the documentation when connecting to your enterprise's Kubernetes Dashboard.
+
+=== Step 5.
+
+This is the basic screen that will output. The different sections are listed on the left side. When any of those are clicked, the body of the site updates with the output and options of the section. Navigate through the different sections to get familiar with its usage.
+
+image::dashboard_step6.png[]
+
+=== Step 6. Viewing Namespaces in the Dashboard
+
+Although covered in more depth in a subsequent module, take note of the *NAMESPACE* section. This will cascade through the other categories so please note the different default namespaces.
+
+image::dashboard_step6.png[]
+
+== Conclusion
+
+??? What goes here???

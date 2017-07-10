@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-two-container
+  labels:
+    app: nginx
+    env: dev
+spec:
+  containers:
+  - name: nginx-container-1
+    image: nginx:1.11-alpine
+    ports:
+    - containerPort: 80
+  - name: nginx-container-2
+    image: nginx:1.11-alpine
+    ports:
+    - containerPort: 80

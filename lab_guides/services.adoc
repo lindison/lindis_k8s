@@ -1,0 +1,130 @@
+= Services
+
+== Lab Objectives
+
+ingress +
+egress +
+
+NodePorts +
+LoadBalancer +
+
+== Lab Structure Overview
+
+---
+---
+
+== Lab Overview
+
+In this section, we'll modify the `nginx deployment` to receive traffic from the Internet using the Kubernetes object, *service*. Services are the logical bridge between pods, other services, and users.
+
+=== Step 1.
+
+Show an output of `all` Kubernetes objects in the default namespace.
+
+$ `kubectl get all`
+
+....
+NAME                        READY     STATUS    RESTARTS   AGE
+po/nginx-3447197284-lm905   1/1       Running   0          1m
+
+NAME             CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+svc/kubernetes   100.64.0.1   <none>        443/TCP   13m
+
+NAME           DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deploy/nginx   1         1         1            1           1m
+
+NAME                  DESIRED   CURRENT   READY     AGE
+rs/nginx-3447197284   1         1         1         1m
+....
+
+NOTE: There is already a service called `svc/kubernetes`, this service routes traffic to the apiserver (`/api/v1/namespaces/default/services/kubernetes`)
+
+=== Step 2.
+
+$ `kubectl get services`
+....
+NAME         CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+kubernetes   100.64.0.1      <none>        443/TCP   20m
+....
+
+TIP: Like other Kubernetes objects, the describe command can help determine the config of a service.
+
+$ `kubectl describe svc/kubernetes`
+....
+Name:			kubernetes
+Namespace:		default
+Labels:			component=apiserver
+			provider=kubernetes
+Annotations:		<none>
+Selector:		<none>
+Type:			ClusterIP
+IP:			100.64.0.1
+Port:			https	443/TCP
+Endpoints:		172.20.33.17:443
+Session Affinity:	ClientIP
+Events:			<none>
+....
+
+=== Step 3.
+
+Let's expose the nginx deployment to receive traffic.
+
+NOTE: Creating a service will create an endpoint for the pod. Endpoints can be seen by running `kubectl get endpoints`. ClusterIP is used by default.
+
+$ `kubectl expose deployment nginx --port=80 --target-port=80`
+
+....
+service "nginx" exposed
+....
+
+NOTE: Although the service is exposed, some additional options and switches need to be used to get the system working.
+
+$ `kubectl expose deployment nginx --port=80 --target-port=80 --type LoadBalancer`
+
+WARNING: If a LoadBalancing service is not available (i.e. Minikube, Vagrant, etc), it may be required to use NodePort (`--type NodePort`)
+
+=== Step 4.
+
+$ `kubectl get all`
+
+....
+NAME                        READY     STATUS    RESTARTS   AGE
+po/nginx-3447197284-lm905   1/1       Running   0          5m
+
+NAME             CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+svc/kubernetes   100.64.0.1      <none>        443/TCP   17m
+svc/nginx        100.64.113.72   <none>        80/TCP    3s
+
+NAME           DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deploy/nginx   1         1         1            1           5m
+
+NAME                  DESIRED   CURRENT   READY     AGE
+rs/nginx-3447197284   1         1         1         5m
+....
+
+NOTE: The service is created but at the moment, the service is not routable.
+
+Let's destroy the service
+
+=== Step 5.
+
+
+=== Step 6.
+
+
+=== Step 7.
+
+
+=== Step 8.
+
+
+=== Step 9.
+
+
+=== Step 10.
+
+
+=== Step 11.
+
+
+== Conclusion

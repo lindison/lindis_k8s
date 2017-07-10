@@ -1,0 +1,46 @@
+= ReplicationControllers
+
+== Lab Objectives
+
+== Lab Structure Overview
+
+
+---
+---
+
+== Lab Overview
+
+In this secton, we'll deploy a replication controller. A *ReplicationController* is defined in one of several ways. In the following steps, we'll configure a ReplicationController at runtime and from a file.
+
+
+image::replicationcontroller.png[]
+
+=== Step 1.
+
+=== Step 2.
+
+=== Step 3.
+
+=== Step 4.
+
+=== Step 5.
+
+
+=== Step 6.
+
+
+=== Step 7.
+
+
+=== Step 8.
+
+
+=== Step 9.
+
+
+=== Step 10.
+
+
+=== Step 11.
+
+== Conclusion

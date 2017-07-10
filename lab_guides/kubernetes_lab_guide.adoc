@@ -1,0 +1,43 @@
+= Deploying Applications with Kubernetes
+Lindis Webb <lindis@solinea.com>
+v1.0, 2017-05-20
+:imagesdir: images
+:navigation:
+ifndef::ebook-format[:leveloffset: 1]
+:icons: font
+:toc2:
+:toclevels: 3
+:data-uri:
+:compat-mode:
+:training: training@solinea.com
+:course: Deploying Applications with Kubernetes
+:homepage: http://solinea.com
+:experimental:
+:idprefix:
+:idseparator: -
+
+include::header.adoc[]
+
+include::feedback.adoc[]
+
+include::book_conventions.adoc[]
+
+include::lab_topology.adoc[]
+
+include::dashboard.adoc[]
+
+include::pods.adoc[]
+
+include::namespaces.adoc[]
+
+include::deployments.adoc[]
+
+include::replication_set.adoc[]
+
+include::services.adoc[]
+
+include::healthchecks.adoc[]
+
+include::monitoring_with_prom.adoc[]
+
+include::application_deployment.adoc[]

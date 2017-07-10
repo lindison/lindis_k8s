@@ -1,0 +1,98 @@
+= Lab Environment
+
+== Lab Objectives
+
+In this section, we'll connect to the provided Kubernetes cluster using the `kubectl` tool.
+
+== The Lab Topology
+
+Before we connect to the Kubernetes Cluster, let's take a moment to review the configuration of the provided cluster. The cluster is hosted in an AWS region (the region closest to the location of the class).  The cluster has access to all AWS services required to build a production ready environment.
+
+The below image is a quick high level topology of your Kubernetes Cluster.
+
+:imagesdir: images
+
+image::KubernetesLab.png[200x200, role=top]
+
+Each student is assigned a dedicated Kubernetes cluster with the following specs:
+
+* 1 x Master
+* 3 x Nodes
+* 1 x VPC (Virtual Private Cloud)
+* 1 x Dedicated DNS Hosted Zone
+
+CAUTION: This course environment *will be deleted* at the end of the course.
+
+TIP: Consider setting up a github repo to hold your project code.
+
+== Lab Overview
+
+In this lab
+
+=== Step 1. Install the kubectl client
+
+To configure your designated system, install the `kubectl` client and place the provided `config` file into their .kube folder.
+
+---
+==== Installing kubectl on MacOS
+
+On MacOS, kubectl can be installed using one of the following methods: +
+_via the curl command_ +
+....
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl
+....
+Once downloaded, the file must be made executable (`chmod +x <filename>`) and moved to the `/usr/local/bin/` directory.
+
+_via homebrew_ +
+`brew install kubectl` +
+
+---
+==== Installing kubectl on Windows
+
+On Windows kubectl can be installed using on of the following methods: +
+_via the curl command_ +
+....
+
+....
+_via downloading from the Internet_ +
+
+---
+==== Installing kubectl on Linux
+On Linux, kubectl can be installed using one of the following methods: +
+....
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+....
+Once downloaded, make the file executable (`chmod +x <filename>`) and move it to the `/usr/local/bin/` directory.
+
+---
+=== Step 2. Testing kubectl
+
+To give `kubectl` a quick test, run the following command: +
+`kubectl version` +
+This should show something very similar to the following:
+....
+Client Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.1", GitCommit:"b0b7a323cc5a4a2019b2e9520c21c7830b7f708e", GitTreeState:"clean", BuildDate:"2017-04-03T23:37:53Z", GoVersion:"go1.8", Compiler:"gc", Platform:"darwin/amd64"}
+
+Server Version: version.Info{Major:"1", Minor:"5", GitVersion:"v1.5.4+coreos.0", GitCommit:"97c11b097b1a2b194f1eddca8ce5468fcc83331c", GitTreeState:"clean", BuildDate:"2017-03-08T23:54:21Z", GoVersion:"go1.7.4", Compiler:"gc", Platform:"linux/amd64"}
+....
+
+<<<
+---
+=== Step 3. Configuring kubectl to work with the provided cluster
+In the `lab_resources` folder, look for the folder with your username. In this folder, there will be a file called `config`. This file contains the configuration required to interact with the course assigned Kubernetes Cluster.
+
+WARNING: Placing the `config` file in your `/.kube` folder will *overwrite* any configs here; backup or rename any `config` file that might be in this directory.
+
+Place the appropriate `config` file in your `./kube/` folder.
+
+Once the `config` file is located in the correct folder, run the following command to get a list of configured nodes: +
+`kubectl get nodes` +
+_returns something that looks like the following_ +
+....
+NAME                                          STATUS         AGE       VERSION
+ip-172-20-33-181.us-west-1.compute.internal   Ready,node     48m       v1.6.2
+ip-172-20-51-116.us-west-1.compute.internal   Ready,master   49m       v1.6.2
+ip-172-20-55-103.us-west-1.compute.internal   Ready,node     48m       v1.6.2
+ip-172-20-54-113.us-west-1.compute.internal   Ready,node     48m       v1.6.2
+....
+CAUTION: If you do not see all nodes in `Ready`, please let the instructor know.

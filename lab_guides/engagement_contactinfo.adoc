@@ -1,0 +1,8 @@
+
+.Solinea Contact Information
+[width="100%", options="header"]
+|====
+| Name | Title | E-mail
+| Sean Williford | Director  | sean@Solinea.com
+| Lindis Webb |  Cloud Architect |lindis@Solinea.com
+|====

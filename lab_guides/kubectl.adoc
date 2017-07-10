@@ -1,0 +1,24 @@
+= kubectl.guru
+
+
+== Typical Topology
+
+Before we connect to the Kubernetes Cluster, let's take a moment to review the configuration of the provided cluster. The cluster is hosted in an AWS region closest to it's need.  The cluster has access to all AWS services required to build a production ready environment.
+
+The below image is a quick high level topology of your Kubernetes Cluster.
+
+:imagesdir: images
+
+image::KubernetesLab.png[200x200, role=top]
+
+The topology will come with the following. 
+
+* 1 x Master
+* 3 x Nodes (more nodes can be requested)
+* 1 x VPC (Virtual Private Cloud)
+* 1 x Dedicated DNS Hosted Zone
+
+CAUTION: This course environment *will be deleted*, it should be considered ephemerial.
+
+TIP: Consider using github to hold your code. 
+

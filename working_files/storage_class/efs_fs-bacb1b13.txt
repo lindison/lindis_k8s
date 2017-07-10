@@ -1,0 +1,26 @@
+# output of: aws efs create-file-system --creation-token 2
+
+{
+    "SizeInBytes": {
+        "Value": 0
+    },
+    "CreationToken": "2",
+    "CreationTime": 1495811388.0,
+    "PerformanceMode": "generalPurpose",
+    "FileSystemId": "fs-bacb1b13",
+    "NumberOfMountTargets": 0,
+    "LifeCycleState": "creating",
+    "OwnerId": "255504686864"
+}
+
+# output of: aws efs create-mount-target --file-system-id fs-bacb1b13 --subnet-id subnet-cb517dac --security-groups sg-b80e53c3
+
+{
+    "MountTargetId": "fsmt-8f9f4226",
+    "NetworkInterfaceId": "eni-728a6d58",
+    "FileSystemId": "fs-bacb1b13",
+    "LifeCycleState": "creating",
+    "SubnetId": "subnet-cb517dac",
+    "OwnerId": "255504686864",
+    "IpAddress": "172.20.49.144"
+}

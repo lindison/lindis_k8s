@@ -1,0 +1,203 @@
+= Kubernetes Namespaces
+
+:imagesdir: images
+
+== Lab Objectives
+
+In this lab, we'll interact with Kubernetes namespaces and create a virtual cluster.
+
+== Lab Structure Overview
+
+The lab follows the general structure, an overview, some steps, and a closing optional challenge.
+
+---
+
+== Lab Overview
+
+In this lab, we'll create a Kubernetes namespace. A namespace is a virtual cluster backed by the same physical cluster. Namespaces are used in enviroments where many users, spread across many teams, share the same physical cluster, as depicted in the diagram below.
+
+image::namespace_overview.png[500,500]
+
+TIP: Kubernetes clusters with tens of users should consider not using namespaces. An example might be a dedicated cluster for a development team.
+
+=== Step 1. Get into a terminal
+Open a terminal console (iTerm, Terminal, PowerShell, Ubuntu Bash, Git Bask, etc)
+
+=== Step 2. Review the default namespaces for the environment
+Run the following command to get the basic namespaces configured by default. +
+$ `kubectl get namespace`
+
+....
+NAME          STATUS    AGE
+default       Active    3h
+kube-public   Active    3h
+kube-system   Active    3h
+....
+
+=== Step 3. Using the `-o yaml` switch
+Run the following command to get detailed information on the namespace. +
+$ `kubectl get namespace default -o yaml` +
+
+....
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: 2017-05-16T04:10:34Z
+  name: default
+  resourceVersion: "15"
+  selfLink: /api/v1/namespacesdefault
+  uid: 9bc3e46c-39ed-11e7-9968-08002774bad8
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active
+....
+=== Step 4. Using the `-o json` switch
+If preferred, changing the `-o yaml` switch to `-o json` will output in json. +
+$ `kubectl get namespace default -o json` +
+....
+{
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "metadata": {
+        "creationTimestamp": "2017-05-16T04:10:34Z",
+        "name": "default",
+        "resourceVersion": "15",
+        "selfLink": "/api/v1/namespacesdefault",
+        "uid": "9bc3e46c-39ed-11e7-9968-08002774bad8"
+    },
+    "spec": {
+        "finalizers": [
+            "kubernetes"
+        ]
+    },
+    "status": {
+        "phase": "Active"
+    }
+}
+....
+=== Step 5. Review existing pods in the `default` namespace
+
+Let's take a look at what we have running. We should see the pod that was created during the dashboard section.
+
+$ `kubectl get pods`
+....
+NAME                     READY     STATUS    RESTARTS   AGE
+nginx-3146706294-17gjb   1/1       Running   0          6s
+....
+
+NOTE: By default, Kubernetes assumes you are referring to the --namespace default when running commands. The below command will yield the same result as the above command.
+
+$ `kubectl get pods --namespace default`
+....
+NAME                     READY     STATUS    RESTARTS   AGE
+nginx-3146706294-17gjb   1/1       Running   0          18m
+....
+
+=== Step 6. Review namespaces
+
+Let's take a look at the pods running in the `kube-system` namespace. To do this, we'll use the `--namespace` switch with the `kubectl get pods` command.
+
+$ `kubectl get pods --namespace kube-system`
+
+NOTE: The below output is trauncated.
+
+....
+NAME                                    READY     STATUS    RESTARTS   AGE
+dns-controller-484843949-2k1kp          1/1       Running   0          54m
+etcd-server-events-ip-172-20-54-1       1/1       Running   0          54m
+etcd-server-ip-172-20-54-106.us-wes     1/1       Running   0          54m
+kube-apiserver-ip-172-20-54-106.us      1/1       Running   0          55m
+....
+
+=== Step 7. Create a new namespace
+
+In this step, we'll create a `development` namespace for hosting development workloads.
+
+$ `kubectl create namespace development`
+....
+namespace "development" created
+....
+
+=== Step 8. Review the new namespace
+
+Review the new namespace
+
+$ `kubectl get namespaces`
+
+....
+NAME          STATUS    AGE
+default       Active    1h
+development   Active    12m
+kube-public   Active    1h
+kube-system   Active    1h
+....
+
+Let's also show the pods currently in the development namespace.
+
+$ `kubectl get pods --namespace development`
+....
+No resources found.
+....
+
+NOTE: This should return "*no resources founds.*" If it returns anything else, check that the `--namespace` switch was used.
+
+TIP: You can also use the `-o yaml` or `-o json` switch to get more detailed information when running the `get` command with kubectl
+
+=== Step 9. Deploy and validate a workload
+
+Let's deploy an nginx workload into the namespace.
+
+$ `kubectl run nginx2 --image nginx:1.11-alpine --namespace development`
+....
+deployment "nginx2" created
+....
+
+$ `kubectl get pods --namespace development`
+....
+NAME                      READY     STATUS             RESTARTS   AGE
+nginx2-2483678633-b65kx   1/1       Running            0          21s
+....
+
+
+=== Step 10. Set the default namespace to `development`
+
+Let's see what our default namespace is set to.
+
+$ `kubectl config view | grep namespace`
+....
+    namespace: default
+....
+
+Let's change the default namespace to use the `development` namepsace.
+
+$ `kubectl config set-context $(kubectl config current-context) --namespace=development`
+....
+Context "kubernetes.kubectl.guru" set.
+....
+
+NOTE: `$(kubectl config current-context)` can be replaced with the name Kubernetes cluster.
+
+We can review this by reviewing the config.
+
+$ `kubectl config view | grep namespace`
+....
+    namespace: development
+....
+
+=== Step 11. Change the default namespace back to `default`
+
+Let's roll back to using the default namespace.
+
+$ `kubectl config set-context $(kubectl config current-context) --namespace=default`
+
+NOTE: Remember, a namespace is literally a virtual cluster inside a Kubernetes cluster.
+
+TIP: When using a shared Kubernetes cluster with a dedicated namespace, consider change the default namespace.
+
+== Challenge
+
+Create a namespace called `QA` and use the Kubernetes Dashboard to deploy a workload into the `QA` namespace.
+
+== Conclusion

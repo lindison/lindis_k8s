@@ -1,0 +1,321 @@
+= Deployments
+
+:imagesdir: images
+
+== Lab Objectives
+
+Deployment declarations used by Kubernetes allows you to create app deployments and update app deployments.
+
+== Lab Structure Overview
+
+---
+---
+
+== Lab Overview
+
+=== Step 1. Create a basic deployment
+
+In this step, we'll create a basic nginx *Deployment Object* using Kubernetes and check the status of the rollout.
+
+$ `kubectl run nginx --image nginx`
+....
+deployment "nginx" created
+....
+
+Now check the status of the Deployments rollout using
+
+$ `kubectl rollout status deployment nginx`
+
+This should return the following:
+....
+deployment "nginx" successfully rolled out
+....
+
+NOTE: For larger deployments, the rollout status will show the status of the rollout.
+
+Let's take a quick look at the Kubernetes objects created.
+
+$ `kubectl get all`
+....
+NAME                        READY     STATUS    RESTARTS   AGE
+po/nginx-3447197284-whqkl   1/1       Running   0          4m
+
+NAME             CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+svc/kubernetes   100.64.0.1   <none>        443/TCP   9m
+
+NAME           DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deploy/nginx   1         1         1            1           4m
+
+NAME                  DESIRED   CURRENT   READY     AGE
+rs/nginx-3447197284   1         1         1         4m
+....
+
+NOTE: Three Kubernetes objects were created
+
+
+TIP: You can also use the dashboard to see the deployment
+
+image::deployments_step_1.png[600,600]
+
+=== Step 2. Looking at existing deployments
+
+$ `kubectl get deployments`
+
+....
+NAME           DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+nginx             1         1         1            0        10 m
+....
+
+WARNING: The above commands will only output the deployments of the selected namespace, which by default is "default."
+
+TIP: When wanting to output the deployments of other namespaces uses the `--namespace` switch
+
+Run the following to see the obecti
+
+To look at their values; run `kubectl get deployments -o json`
+
+DESIRED::
+This shows the number of desired replicas, this is defined by the (`.spec.replicas`)
+
+....
+    "spec": {
+        "replicas": 1,
+        "selector": {
+            "matchLabels": {
+                "run": "nginx"
+            }
+....
+
+CURRENT::
+This shows the number of current replicas, this is defined by the (`.status.replicas`)
+
+....
+    "status": {
+        "replicas": 1,
+....
+
+
+UP-TO-DATE::
+This shows the number of up-to-date replicas in the deployment (`.status.updatedReplicas`)
+
+....
+    "status": {
+        "updatedReplicas": 1
+....
+
+AVAILABLE::
+This shows the number of pods available for being updated (`.status.availableReplicas`)
+
+....
+    "status": {
+        "unavailableReplicas": 1,
+....
+
+AGE::
+This shows the age of the deployment.
+
+....
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: 2017-05-23T16:17:48Z
+....
+
+=== Step 3. Looking deeper at a deployment
+Looking at more detail of a Kubernetes Deployment Object.
+
+$ `kubectl describe deployment <deployment_name>`
+
+$ `kubectl describe deploy/<deployment_name>`
+
+TIP: Both above methods achieve the same result.
+
+.Truncated output of the above commands
+....
+Name:			nginx
+Namespace:		default
+CreationTimestamp:	Tue, 23 May 2017 10:56:15 -0700
+Labels:			run=nginx
+Annotations:		deployment.kubernetes.io/revision=1
+Selector:		run=nginx
+Replicas:		1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:		RollingUpdate ...
+....
+
+NOTE: The describe command doesn't work with the -o (output) switch. This is namely due to how the describe commands collects the data points required to present the data.
+
+
+=== Step 4. Scaling the deployment
+
+By default, all deployments are deployed with a ReplicationController and a `--replica` value of 1. Notice in the previous step, *Replicas* has a value of 1. Thus, let's add more `--replicas` to the nginx deployment.
+
+$ `kubectl scale deployment nginx --replicas 10`
+....
+deployment "nginx" scaled
+....
+
+Let's take a closer look at the deployment.
+
+$ `kubectl get deployment nginx`
+....
+NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+nginx     10        10        10           10          28m
+....
+
+Let's delete the deployment `nginx`
+
+$ `kubectl delete deployment nginx`
+....
+service "kubernetes" deleted
+....
+
+=== Step 5. Create a Deployment Manifest
+
+Create a file called `nginx.yaml` and populate it with the following content.
+
+....
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.11-alpine
+        ports:
+        - containerPort: 80
+....
+
+Let's create a deployment from it using the `*kubectl create*` command.
+
+$ `kubectl create -f nginx.yaml`
+....
+deployment "nginx" created
+....
+
+NOTE: Writing manifest is the better means to deploying Kubernetes objects.
+
+
+=== Step 6. Check the status of the manifest
+
+Run a check to see the status of the `rollout`
+
+$ `kubectl rollout status deployment nginx`
+....
+deployment "nginx" successfully rolled out
+....
+
+$ `kubectl get all`
+....
+NAME                        READY     STATUS    RESTARTS   AGE
+po/nginx-2371676037-4cpr0   1/1       Running   0          15m
+
+NAME             CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+svc/kubernetes   100.64.0.1   <none>        443/TCP   25m
+
+NAME           DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deploy/nginx   1         1         1            1           15m
+
+NAME                  DESIRED   CURRENT   READY     AGE
+rs/nginx-2371676037   1         1         1         15m
+....
+
+NOTE: The same objects were created by the manifest.
+
+=== Step 7.
+
+
+
+=== Step 8. Resource Management (CPU/RAM)
+
+There are many cases where resources may need to be limited; in these cases, we can add the resources spec to the `spec: container` section of the `yaml` file.
+
+....
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.11-alpine
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "128Mi"
+....
+
+NOTE: Defining resource is especially useful in defining the minimum required resources for a pod. In the above example, the container is only deployable to a system with .5 CPU (1/2 Core). Once deployed to a system with .5 core available, the container will consume all CPU until another container is deployed into the pod.
+
+TIP: This helps the scheduler avoid resource shortages.
+
+=== Step 9. Labels
+
+Let's create some nginx pod with labels, first from the command-line and next from a `yaml` file. Let's create one for prod and one for test. Let's also define the app, in this case, let's use `nginx`.
+
+....
+$ kubectl run nginx-prod \
+    --image=nginx:1.11-alpine \
+    --replicas=3 \
+    --labels="app=nginx,env=prod"
+....
+
+....
+$ kubectl run nginx-test \
+    --image=nginx:1.9.10 \
+    --replicas=2 \
+    --labels="app=nginx,env=test"
+....
+
+NOTE: Labels are the only way to group Kubernetes objects.
+
+$ `kubectl get pods`
+
+$ `kubectl get pods --selector="app=nginx"`
+
+$ `kubectl get pods --selector="env=prod"`
+
+$ `kubectl get pods --selector="env=test"`
+
+Let's create another pod that runs apache.
+
+....
+$ kubectl run httpd-test \
+    --image=httpd:alpine \
+    --replicas=2 \
+    --labels="app=httpd,env=test"
+....
+
+Let's run the following to see the different ways a label can be queried.
+
+First, let's select all pods where `app=nginx`
+
+$ `kubectl get pods --selector="app=nginx"`
+
+Now, let's select all pods where `app=httpd`
+
+$ `kubectl get pods --selector="app=httpd"`
+
+
+$ `kubectl get pods --selector="env=test"`
+
+TIP: One or more labels can be used with the `--selector` switch.
+
+$ `kubectl get pods --selector="env=test,app=nginx"`
+
+
+== Conclusion
