@@ -1,6 +1,6 @@
-# Kubernetes Course
+# kubernetes sandbox for Mr. Lindis. 
 
-This contains the source for the working files and the lab guides used the Kubernetes Course.  
+Just my area to play with Kubernetes on AWS. 
 
 
 
